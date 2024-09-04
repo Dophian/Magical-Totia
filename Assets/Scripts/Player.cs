@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
     private PlayerMove playerMove;
     private PlayerInput playerInput;
 
+    [SerializeField] private IGun gun;
+
     private enum ViewSide
     {
         Left,
@@ -26,6 +28,7 @@ public class Player : MonoBehaviour
         playerInput.OnPressJump += playerMove.Jump;
         playerInput.OnPressMove += playerMove.Move;
         playerInput.OnPressMove += CharacterViewChange;
+        playerInput.OnPressFire += gun.Fire;
     }
 
     private void Update()

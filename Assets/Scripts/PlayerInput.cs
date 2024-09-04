@@ -5,19 +5,21 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
-    public event Action OnPressJump;
-    public event Action<Vector2> OnPressMove;
-
+    // Input Axes
     private const string INPUT_HORIZONTAL = "Horizontal";
-    private float inputHorizontal;
     private const string INPUT_JUMP = "Jump";
-    private bool inputJump;
+    private const string INPUT_FIRE = "Fire1";
+
+    // Events
+    public event Action<Vector2> OnPressMove;
+    public event Action OnPressJump;
+    public event Action OnPressFire;
 
     public Vector2 inputVec;
 
     public void Input()
     {
-        inputHorizontal = UnityEngine.Input.GetAxisRaw(INPUT_HORIZONTAL);
+        float inputHorizontal = UnityEngine.Input.GetAxisRaw(INPUT_HORIZONTAL);
         inputVec = new Vector2(inputHorizontal, 0);
 
         if (inputVec != Vector2.zero)
@@ -28,6 +30,11 @@ public class PlayerInput : MonoBehaviour
         if (UnityEngine.Input.GetButtonDown(INPUT_JUMP))
         {
             OnPressJump?.Invoke();
+        }
+
+        if (UnityEngine.Input.GetButton(INPUT_FIRE))
+        {
+            OnPressFire?.Invoke();
         }
     }
 
