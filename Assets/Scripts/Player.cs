@@ -4,16 +4,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private Rigidbody2D rigid;
-
-    public Vector2 inputVec;
-    public float speed;
-    public float jumpStrength;
-
-    private const string INPUT_HORIZONTAL= "Horizontal";
-    private float inputHorizontal;
-    private const string INPUT_JUMP = "Jump";
-    private bool inputJump;
+    // Component
+    private PlayerMove playerMove;
+    private PlayerInput playerInput;
 
     private enum ViewSide
     {
@@ -24,65 +17,55 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        rigid = GetComponent<Rigidbody2D>();
+        playerMove = GetComponent<PlayerMove>();
+        playerInput = GetComponent<PlayerInput>();
+    }
+
+    private void Start()
+    {
+        playerInput.OnPressJump += playerMove.Jump;
+        playerInput.OnPressMove += playerMove.Move;
+        playerInput.OnPressMove += CharacterViewChange;
     }
 
     private void Update()
     {
-        Input();
+        playerInput.Input();
     }
 
-    private void Input()
+    private void CharacterViewChange(Vector2 inputVec)
     {
-        inputHorizontal = UnityEngine.Input.GetAxisRaw(INPUT_HORIZONTAL);
-        inputVec = new Vector2(inputHorizontal, 0);
-
         ViewSide currentViewSide = ViewSide.Left;
 
-        if (inputVec.x != 0)
+        if (!Mathf.Approximately(inputVec.x, 0))
         {
             currentViewSide = inputVec.x > 0 ? ViewSide.Right : ViewSide.Left;
         }
         else
         {
-            currentViewSide = lastViewSide;
+            return;
         }
-        
-        if (currentViewSide != lastViewSide)
+
+        if (currentViewSide == lastViewSide)
         {
-            switch (currentViewSide)
-            {
-                case ViewSide.Left:
-                    transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-                    break;
-                case ViewSide.Right:
-                    transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-                    break;
-            }
-
-            lastViewSide = currentViewSide;
+            return;
         }
 
-        if (UnityEngine.Input.GetButtonDown(INPUT_JUMP))
+        switch (currentViewSide)
         {
-            Jump();
+            case ViewSide.Left:
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                break;
+            case ViewSide.Right:
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                break;
         }
-    }
 
-    private void Jump()
-    {
-        rigid.velocity = new Vector2(rigid.velocity.x, 0);
-        rigid.velocity = new Vector2(rigid.velocity.x, jumpStrength);
+        lastViewSide = currentViewSide;
     }
 
     private void FixedUpdate()
     {
-        Move();
-    }
-
-    private void Move()
-    {
-        Vector2 moveVec = inputVec * speed * Time.fixedDeltaTime;
-        rigid.velocity = new Vector2(moveVec.x, rigid.velocity.y);
+        playerMove.Move(playerInput.GetInputVector());
     }
 }
