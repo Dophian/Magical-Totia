@@ -711,6 +711,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeed54761d619274896ffa58cc4e59e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grabPoint: {fileID: 1780461114}
+  gun: {fileID: 2136204257}
 --- !u!50 &1555457899
 Rigidbody2D:
   serializedVersion: 4
@@ -850,6 +852,7 @@ Transform:
   m_Children:
   - {fileID: 833362497}
   - {fileID: 1158834840}
+  - {fileID: 1780461114}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1555457903
@@ -963,6 +966,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1780461113
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1780461114}
+  m_Layer: 0
+  m_Name: Gun Grab Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1780461114
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780461113}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.07, y: -0.287, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1555457902}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1818594863
 GameObject:
   m_ObjectHideFlags: 0
@@ -1122,7 +1156,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6622b32351cae00429de062d110ffdd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
+  gunName: "\uB9AC\uBCFC\uBC84"
+  maxAmmo: 6
+  damage: 10
+  shotRate: 0.75
+  reloadTime: 1.5
+  fireType: 0
+  player: {fileID: 1555457898}
+  debugText: 
 --- !u!4 &2136204258
 Transform:
   m_ObjectHideFlags: 0

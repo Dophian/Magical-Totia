@@ -28,7 +28,6 @@ public interface IGun
     public int CurrentAmmo { get; }
     public float Damage { get; }
     public float ShotRate { get; }
-    public float LastShotTime { get; }
     public float ShotRateTimer { get; }
     public float ReloadTime { get; }
     public float ReloadTimer { get; }

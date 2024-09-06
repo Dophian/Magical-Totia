@@ -4,38 +4,58 @@ using UnityEngine;
 
 public class Revolver : Gun
 {
+    // Components
+    [SerializeField] private Player player;
+
+    [Header("디버깅")]
+    [SerializeField]
+    [TextArea(15, 20)]
+    private string debugText;
+
+    private void Start()
+    {
+        // 임시 초기화
+        currentAmmo = maxAmmo;
+    }
+
     public void Update()
     {
         // TO DO
         // 상태 관리 기능, Update에서 매 프레임 확인하는 것이 좋을 것 같음
 
-        if (Time.time >= (lastShotTime + shotRate) && state != GunState.Reload)
+        switch (state)
         {
-            // TO DO
-            // Switch 문으로 개선
-            // 추가 예외 조건 확인
-            state = GunState.ReadyToShot;
+            case GunState.ReadyToShot:
+                break;
+            case GunState.WaitForFireRate:
+                shotRateTimer -= Time.deltaTime;
+                bool isReadyToShot = shotRateTimer <= 0;
+
+                if (isReadyToShot)
+                {
+                    shotRateTimer= shotRate;
+                    state = GunState.ReadyToShot;
+                }
+                break;
+            case GunState.Reload:
+                reloadTimer -= Time.deltaTime;
+                bool isReloadTimerDone = reloadTimer <= 0;
+
+                if (isReloadTimerDone)
+                {
+                    Reload();
+                }
+                break;
         }
 
-        if (state == GunState.Reload)
-        {
-            reloadTimer -= Time.deltaTime;
+        // 장비 중이라면
+        FollowGrabPoint(player.GrabPoint.position);
 
-            // TO DO
-            // 재장전 로직 작성
-            // Update가 아닌 함수로 빼기
-            // Switch 문으로 개선
-        }
+        UpdateDebugText();
     }
 
     public override void Fire()
     {
-        // 플레이어가 원거리 무기를 든 상태에서 발사 버튼을 누를 경우 트리거
-        // 쏠 수 있는 상태일 때
-        // ㄴ 재장전 상태가 아님, FireRate가 쏠 수 있는 상태
-        // 탄약이 1이상 있다면 발사, 탄약 -1, 투사체 생성
-        // ㄴ 만약 탄약이 0이하라면 재장전 상태로 자동 진입
-
         if (state != GunState.ReadyToShot)
         {
             return;
@@ -43,29 +63,64 @@ public class Revolver : Gun
 
         if (currentAmmo > 0)
         {
-            Debug.Log("Revolver Fire!");
             currentAmmo--;
-            lastShotTime = Time.time;
-            state = GunState.Shot;
+            ChangeState(GunState.Shot);
+            ChangeState(GunState.WaitForFireRate);
 
             if (currentAmmo <= 0)
             {
-                Reload();
+                ChangeState(GunState.Reload);
             }
         }
         else
         {
-            Reload();
+            ChangeState(GunState.Reload);
         }
     }
 
     public override void Reload()
     {
-        // ReloadTime을 흘려보냄
-        // 전부 다 되면 현재 탄약 = 최대 탄약 대입
-        // 쏠 수 있는 상태로 변경
+        currentAmmo = MaxAmmo;
+        reloadTimer = reloadTime;
+        state = GunState.ReadyToShot;
+    }
 
-        state = GunState.Reload;
-        Debug.Log("Revolver Reloading!");
+    private void UpdateDebugText()
+    {
+        debugText = string.Empty;
+
+        debugText += $"이름 : {Name}\n";
+        debugText += "상태 : ";
+        switch (state)
+        {
+            case GunState.ReadyToShot:
+                debugText += "발사 준비 됨";
+                break;
+            case GunState.Shot:
+                debugText += "발사 중";
+                break;
+            case GunState.WaitForFireRate:
+                debugText += "발사 대기 중 (발사 속도 제한)";
+                break;
+            case GunState.AmmoEmpty:
+                debugText += "장전된 탄약 없음";
+                break;
+            case GunState.Reload:
+                debugText += "재장전 중";
+                break;
+        }
+        debugText += "\n";
+
+        debugText +=
+            $"피해량 : {Damage}\n" +
+            $"\n" +
+            $"최대 탄약 : {MaxAmmo}\n" +
+            $"현재 탄약 : {CurrentAmmo}\n" +
+            $"\n" +
+            $"연사 속도 : {ShotRate}\n" +
+            $"연사 대기 시간 : {ShotRateTimer}\n" +
+            $"\n" +
+            $"재장전 시간 : {ReloadTime}\n" +
+            $"재장전 타이머 : {ReloadTimer}";
     }
 }

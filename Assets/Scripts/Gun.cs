@@ -5,36 +5,38 @@ using UnityEngine;
 public abstract class Gun : Weapon, IGun
 {
     // TO DO
-    // Gun ºÎ¸ð Å¬·¡½º ¸¸µé±â
-    // ±ÙÁ¢ ¹«±â ¸¸µé°Å »ý°¢ÇØ¼­ Weapon Å¬·¡½º³ª ÀÎÅÍÆäÀÌ½º »ý°¢ÇÏ±â
+    // Gun ë¶€ëª¨ í´ëž˜ìŠ¤ ë§Œë“¤ê¸°
+    // ê·¼ì ‘ ë¬´ê¸° ë§Œë“¤ê±° ìƒê°í•´ì„œ Weapon í´ëž˜ìŠ¤ë‚˜ ì¸í„°íŽ˜ì´ìŠ¤ ìƒê°í•˜ê¸°
     public GameObject BulletPrefab => bulletPrefab;
     protected GameObject bulletPrefab;
 
+    public override string Name => gunName;
+    [Header("ì´ê¸° ì†ì„±")]
+    [SerializeField] protected string gunName;
+
     public int MaxAmmo => maxAmmo;
-    protected int maxAmmo;
+    [SerializeField] protected int maxAmmo;
 
     public int CurrentAmmo => currentAmmo;
     protected int currentAmmo;
 
     public float Damage => damage;
-    protected float damage;
+    [SerializeField] protected float damage;
 
     public float ShotRate => shotRate;
-    protected float shotRate = 0.75f;
-    public float LastShotTime => lastShotTime;
-    protected float lastShotTime;
+    [SerializeField] protected float shotRate = 0.75f;
 
     public float ShotRateTimer => shotRateTimer;
     protected float shotRateTimer;
 
     public float ReloadTime => reloadTime;
-    protected float reloadTime = 1.5f;
+    [SerializeField] protected float reloadTime = 1.5f;
 
     public float ReloadTimer => reloadTimer;
     protected float reloadTimer;
 
     GunFireType IGun.FireType { get => fireType; }
-    protected GunFireType fireType;
+    [SerializeField] protected GunFireType fireType;
 
     GunState IGun.State { get => state; }
     protected GunState state;
@@ -42,4 +44,9 @@ public abstract class Gun : Weapon, IGun
     public abstract void Fire();
 
     public abstract void Reload();
+
+    protected void ChangeState(GunState state)
+    {
+        this.state = state;
+    }
 }

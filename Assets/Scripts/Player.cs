@@ -8,7 +8,10 @@ public class Player : MonoBehaviour
     private PlayerMove playerMove;
     private PlayerInput playerInput;
 
-    [SerializeField] private IGun gun;
+    public Transform GrabPoint { get => grabPoint; }
+    [SerializeField] private Transform grabPoint;
+
+    [SerializeField] private Gun gun;
 
     private enum ViewSide
     {
@@ -70,5 +73,10 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         playerMove.Move(playerInput.GetInputVector());
+    }
+
+    private void ChangeWeapon()
+    {
+
     }
 }

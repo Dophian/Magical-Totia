@@ -2,14 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EWeaponType
+public enum WeaponType
 {
     Melee,
     Range,
 }
 
-public class Weapon : MonoBehaviour
+public abstract class Weapon : MonoBehaviour
 {
-    public string name;
-    public EWeaponType type;
+    public abstract string Name { get; }
+    protected WeaponType type;
+
+    protected void FollowGrabPoint(Vector3 position)
+    {
+        transform.position = position;
+    }
 }
