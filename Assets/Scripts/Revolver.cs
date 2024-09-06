@@ -2,54 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Revolver : MonoBehaviour, IGun
+public class Revolver : Gun
 {
-    // TO DO
-    // Gun 부모 클래스 만들기
-    // 근접 무기 만들거 생각해서 Weapon 클래스나 인터페이스 생각하기
-    public GameObject BulletPrefab => bulletPrefab;
-    private GameObject bulletPrefab;
-
-    public int MaxAmmo => maxAmmo;
-    private int maxAmmo;
-
-    public int CurrentAmmo => currentAmmo;
-    private int currentAmmo;
-
-    public float Damage => damage;
-    private float damage;
-
-    public float ShotRate => shotRate;
-    private float shotRate = 0.75f;
-    public float LastShotTime => lastShotTime;
-    private float lastShotTime;
-
-    public float ShotRateTimer => shotRateTimer;
-    private float shotRateTimer;
-
-    public float ReloadTime => reloadTime;
-    private float reloadTime = 1.5f;
-
-    public float ReloadTimer => reloadTimer;
-    private float reloadTimer;
-
-    IGun.EFireType IGun.FireType { get => fireType; }
-    IGun.EFireType fireType;
-
-    IGun.EState IGun.State { get => state; }
-    public IGun.EState state;
-
     public void Update()
     {
-        if (Time.time >= lastShotTime && state != IGun.EState.Reload)
+        // TO DO
+        // 상태 관리 기능, Update에서 매 프레임 확인하는 것이 좋을 것 같음
+
+        if (Time.time >= (lastShotTime + shotRate) && state != GunState.Reload)
         {
             // TO DO
             // Switch 문으로 개선
             // 추가 예외 조건 확인
-            state = IGun.EState.ReadyToShot;
+            state = GunState.ReadyToShot;
         }
 
-        if (state == IGun.EState.Reload)
+        if (state == GunState.Reload)
         {
             reloadTimer -= Time.deltaTime;
 
@@ -60,40 +28,44 @@ public class Revolver : MonoBehaviour, IGun
         }
     }
 
-    public void Fire()
+    public override void Fire()
     {
+        // 플레이어가 원거리 무기를 든 상태에서 발사 버튼을 누를 경우 트리거
         // 쏠 수 있는 상태일 때
         // ㄴ 재장전 상태가 아님, FireRate가 쏠 수 있는 상태
         // 탄약이 1이상 있다면 발사, 탄약 -1, 투사체 생성
         // ㄴ 만약 탄약이 0이하라면 재장전 상태로 자동 진입
 
-        if (state == IGun.EState.ReadyToShot)
+        if (state != GunState.ReadyToShot)
         {
-            if (currentAmmo > 0)
-            {
-                Debug.Log("Revolver Fire!");
-                currentAmmo--;
-                lastShotTime = Time.time;
+            return;
+        }
 
-                if (currentAmmo <= 0)
-                {
-                    Reload();
-                }
-            }
-            else
+        if (currentAmmo > 0)
+        {
+            Debug.Log("Revolver Fire!");
+            currentAmmo--;
+            lastShotTime = Time.time;
+            state = GunState.Shot;
+
+            if (currentAmmo <= 0)
             {
                 Reload();
             }
         }
+        else
+        {
+            Reload();
+        }
     }
 
-    public void Reload()
+    public override void Reload()
     {
         // ReloadTime을 흘려보냄
         // 전부 다 되면 현재 탄약 = 최대 탄약 대입
         // 쏠 수 있는 상태로 변경
 
-        state = IGun.EState.Reload;
+        state = GunState.Reload;
         Debug.Log("Revolver Reloading!");
     }
 }

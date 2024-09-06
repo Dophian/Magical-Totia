@@ -2,6 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GunState
+{
+    ReadyToShot,
+    Shot,
+    WaitForFireRate,
+    AmmoEmpty,
+    Reload,
+}
+
+public enum GunFireType
+{
+    SemiAuto,
+    ThreeRoundBurst,
+    FullAuto,
+}
+
 public interface IGun
 {
     // Prefabs
@@ -16,22 +32,10 @@ public interface IGun
     public float ShotRateTimer { get; }
     public float ReloadTime { get; }
     public float ReloadTimer { get; }
-    public enum EFireType
-    {
-        SemiAuto,
-        ThreeRoundBurst,
-        FullAuto,
-    }
-    public EFireType FireType { get; } 
-    public enum EState
-    {
-        ReadyToShot,
-        Shot,
-        WaitForFireRate,
-        AmmoEmpty,
-        Reload,
-    }
-    public EState State { get; }
+
+    public GunFireType FireType { get; } 
+
+    public GunState State { get; }
 
     public void Fire();
     public void Reload();
