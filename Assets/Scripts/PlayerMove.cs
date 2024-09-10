@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,12 @@ public class PlayerMove : MonoBehaviour
     // Properties
     public float speed = 200f;
     public float jumpStrength = 15f;
+    public LayerMask groundLayer;
+
+    // Events
+    public event Action OnCollisionGround;
+
+    private const string GROUND_LAYER = "Ground";
 
     private void Awake()
     {
@@ -27,5 +34,13 @@ public class PlayerMove : MonoBehaviour
     {
         rigid.velocity = new Vector2(rigid.velocity.x, 0);
         rigid.velocity = new Vector2(rigid.velocity.x, jumpStrength);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer(GROUND_LAYER))
+        {
+            Debug.Log("바닥에 충돌함");
+        }
     }
 }
